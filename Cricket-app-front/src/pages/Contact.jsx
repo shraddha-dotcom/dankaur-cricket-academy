@@ -203,7 +203,7 @@ const Contact = () => {
                   }}
                 >
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m12!1m8!1m3!1d219.42379669110977!2d77.5343964!3d28.3654776!3m2!1i1024!2i768!4f13.1!2m1!1sUday%20Bhagat%20Ji%20Cricket%20Ground%2C%20Dhanouri%20Road%2C%20Dankaur%2C%20G.B.%20Nagar%20U.P.%20203201!5e0!3m2!1sen!2sin!4v1767953946536!5m2!1sen!2sin"
+                    src={`https://www.google.com/maps?q=Uday+Bhagat+Ji+Cricket+Ground,+Dhanouri+Road,+Dankaur,+G.B.+Nagar+U.P.+203201&output=embed`}
                     width="100%"
                     height="100%"
                     frameBorder="0"
@@ -213,7 +213,7 @@ const Contact = () => {
                       width: '100%',
                       height: '100%'
                     }}
-                    allowFullScreen=""
+                    allowFullScreen={true}
                     loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     title="Dankaur Cricket Academy Location - Uday Bhagat Ji Cricket Ground"
