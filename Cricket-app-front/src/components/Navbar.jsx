@@ -88,16 +88,24 @@ const Navbar = () => {
         className={`md:hidden transition-all duration-300 overflow-hidden ${
           isMenuOpen ? "max-h-96" : "max-h-0"
         }`}
-        style={{ backgroundColor: "var(--primary)" }}
+        style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(12px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+          boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.1)'
+        }}
       >
-        <div className="flex flex-col gap-4 px-6 py-6">
+        <div className="flex flex-col gap-3 px-6 py-6">
           {["/", "/about", "/contact"].map((path, i) => (
             <Link
               key={path}
               to={path}
               onClick={() => setIsMenuOpen(false)}
-              className={`text-white ${
-                isActive(path) ? "font-semibold" : "opacity-80"
+              className={`text-white px-4 py-3 rounded-lg transition-all backdrop-blur-sm ${
+                isActive(path) 
+                  ? "font-semibold bg-white/20 border border-white/30 shadow-lg" 
+                  : "bg-white/10 hover:bg-white/15 border border-white/20 shadow-md"
               }`}
             >
               {["Home", "About Us", "Contact Us"][i]}
@@ -107,7 +115,7 @@ const Navbar = () => {
           <Link
             to="/registration"
             onClick={() => setIsMenuOpen(false)}
-            className="bg-secondary text-black text-center py-2 rounded-full font-semibold"
+            className="bg-white/20 backdrop-blur-sm text-white text-center py-3 rounded-full font-semibold hover:bg-white/25 transition-all border border-white/30 shadow-lg mt-2"
           >
             Registration
           </Link>

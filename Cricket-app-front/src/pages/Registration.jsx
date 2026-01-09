@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 
 const Registration = () => {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     // Student Details
     name: "",
@@ -42,10 +46,88 @@ const Registration = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  // Generate unique Registration ID
+  const generateRegistrationId = () => {
+    const year = new Date().getFullYear();
+    const randomNum = Math.floor(100000 + Math.random() * 900000); // 6-digit random number
+    return `DCA-${year}-${randomNum}`;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    alert("Registration submitted successfully!");
+    setIsSubmitting(true);
+
+    try {
+      // Generate Registration ID
+      const registrationId = generateRegistrationId();
+
+      // Prepare email template parameters
+      const templateParams = {
+        to_email: formData.email || formData.parentMobile + '@example.com', // Fallback if no email
+        to_name: formData.name,
+        registration_id: registrationId,
+        student_name: formData.name,
+        student_dob: formData.dob,
+        student_gender: formData.gender,
+        student_mobile: formData.studentMobile,
+        parent_mobile: formData.parentMobile,
+        email: formData.email || 'Not provided',
+        address: formData.address,
+        city: formData.city,
+        pincode: formData.pincode,
+        category: formData.category,
+        role: formData.role,
+        batting_style: formData.battingStyle,
+        bowling_style: formData.bowlingStyle,
+        trained_before: formData.trainedBefore,
+        training_slot: formData.trainingSlot,
+        medical_issue: formData.medicalIssue,
+        emergency_name: formData.emergencyName,
+        emergency_mobile: formData.emergencyMobile,
+        view_link: `${window.location.origin}/view-registration/${registrationId}`,
+        academy_email: 'dankaurcricketacademy@gmail.com',
+        academy_phone: '7505228484',
+      };
+
+      // Send email using EmailJS
+      // Get credentials from environment variables or use defaults
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+
+      // Initialize EmailJS with public key
+      emailjs.init(publicKey);
+
+      // Send email
+      await emailjs.send(
+        serviceId,
+        templateId,
+        templateParams
+      );
+
+      // Navigate to confirmation page with registration ID
+      navigate('/registration-confirmation', {
+        state: {
+          registrationId,
+          studentName: formData.name,
+          formData: formData
+        }
+      });
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      // Still show success even if email fails (registration ID is generated)
+      const registrationId = generateRegistrationId();
+      navigate('/registration-confirmation', {
+        state: {
+          registrationId,
+          studentName: formData.name,
+          formData: formData,
+          emailError: true
+        }
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -110,12 +192,12 @@ const Registration = () => {
                 required
                 onChange={handleChange}
               />
-              <RadioGroup
-                label="Gender *"
-                name="gender"
-                options={["Male", "Female", "Other"]}
-                onChange={handleChange}
-              />
+                <RadioGroup
+                  label="Gender *"
+                  name="gender"
+                  options={["Male", "Female"]}
+                  onChange={handleChange}
+                />
               <Input
                 label="Student Mobile *"
                 name="studentMobile"
@@ -272,13 +354,14 @@ const Registration = () => {
               </span>
             </label>
             <div className="text-center pt-2">
-              <button
-                type="submit"
-                className="px-10 md:px-16 py-3.5 md:py-4 text-white rounded-lg text-base md:text-lg font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5"
-                style={{ backgroundColor: '#1e3a8a' }}
-              >
-                Submit Registration
-              </button>
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-10 md:px-16 py-3.5 md:py-4 text-white rounded-lg text-base md:text-lg font-semibold transition-all hover:opacity-90 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: '#1e3a8a' }}
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Registration'}
+                </button>
             </div>
           </div>
         </div>
