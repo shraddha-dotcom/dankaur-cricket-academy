@@ -12,7 +12,7 @@ function App() {
     <Router>
       <div
         className="App min-h-screen flex flex-col"
-        style={{ backgroundColor: "var(--bg)" }}
+        style={{ backgroundColor: "#F5F5DC" }}
       >
         <Navbar />
         <Routes>

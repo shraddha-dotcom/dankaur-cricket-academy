@@ -1,24 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      // Change background when scrolled past 100px (hero section height threshold)
+      setIsScrolled(scrollPosition > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <nav
-      className="sticky top-0 z-[1000] backdrop-blur-md"
-      style={{ backgroundColor: "var(--primary)" }}
+      className={`fixed top-0 left-0 right-0 z-[1000] transition-all duration-300 ${
+        isScrolled ? 'backdrop-blur-md' : ''
+      }`}
+      style={{
+        backgroundColor: isScrolled 
+          ? 'rgba(30, 58, 138, 0.95)' // Dark blue when scrolled (opposite of beige)
+          : 'transparent' // No background color at top - shows hero image
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-[72px] flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2">
           <img
-            src="/logo.png"
+            src="/logo1.PNG"
             alt="Dankaur Cricket Academy"
-            className="h-12 w-12 object-contain"
+            className="h-32 w-auto object-contain"
           />
           <span className="text-white text-xl md:text-2xl font-semibold tracking-wide">
             Dankaur Cricket Academy
